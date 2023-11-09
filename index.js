@@ -10,7 +10,8 @@ const port = process.env.PORT || 5000;
 // middleware
 app.use(cors({
     origin: [
-        // 'http://localhost:5173'
+        'http://localhost:5173',
+        'http://localhost:5000',
         'https://car-doctor-a0f87.web.app',
         'https://car-doctor-a0f87.firebaseapp.com'
     ],
@@ -87,7 +88,19 @@ async function run() {
 
         //this is services data
         app.get('/services', async (req, res) => {
-            const cursor = serviceCollection.find();
+            const filter = req.query
+            console.log(filter);
+            // const query = {price: {$lte: 40 , $gt: 20}}
+            // db.InspirationalWomen.find({first_name: { $regex: /Harriet/i} })
+            const query = {
+                // title: {$regex: filter.search , $options: 'i'}
+            }
+            console.log(query);
+            // const query = {}
+            const options = {
+                sort: {price: filter.sort === 'asc' ? 1 : -1}
+            }
+            const cursor = serviceCollection.find(query, options);
             const result = await cursor.toArray();
             res.send(result);
         })
